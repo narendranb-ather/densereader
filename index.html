@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dense Reader Bookmarklet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .grab-cursor {
+            cursor: grab;
+        }
+        .grab-cursor:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen font-sans antialiased flex flex-col items-center justify-center p-4">
+
+    <div class="max-w-3xl w-full bg-slate-800 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-emerald-600 p-4 text-center text-white">
+            <h1 class="text-2xl font-extrabold tracking-tight mb-1">Dense Reader</h1>
+            <p class="text-emerald-100 text-sm max-w-xl mx-auto">
+                Bypass client-side paywall and extract articles into a clean, comfortable reading overlay.
+            </p>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 sm:p-6 text-center">
+            
+            <h2 class="text-lg font-bold text-white mb-3">Step 1: Drag this button to your Bookmarks Bar</h2>
+            
+            <!-- 
+                The Bookmarklet Logic:
+                1. Injects Readability.js
+                2. Fetches the RAW window.location.href (bypassing client-side DOM mutation)
+                3. Parses the raw text into a DOM object
+                4. Extracts content
+                5. Injects a full-screen overlay with comfortable reading CSS
+            -->
+            <a 
+                href="javascript:(function(){var s=document.createElement('script');s.src='https://unpkg.com/@mozilla/readability/Readability.js';s.onload=function(){fetch(window.location.href).then(r=>r.text()).then(h=>{var d=new DOMParser().parseFromString(h,'text/html');var a=new Readability(d).parse();var old=document.getElementById('dr-over');if(old)old.remove();var o=document.createElement('div');o.id='dr-over';var css='<style>#dr-over{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#fdfdfd;z-index:2147483647;overflow-y:auto;padding:60px 20px;box-sizing:border-box;color:#333;font-family:Georgia, serif;font-size:19px;line-height:1.6;}#dr-over-inner{max-width:680px;margin:0 auto;}#dr-over h1{font-size:2.2em;line-height:1.2;margin-bottom:24px;font-weight:bold;color:#111;font-family:-apple-system, sans-serif;}#dr-over h2,#dr-over h3{font-size:1.5em;margin-top:32px;margin-bottom:16px;font-weight:bold;color:#111;font-family:-apple-system, sans-serif;}#dr-over p{margin-bottom:24px;}#dr-over ul, #dr-over ol{margin-bottom:24px;padding-left:30px;}#dr-over li{margin-bottom:10px;}#dr-over img{max-width:100%;height:auto;margin:32px 0;border-radius:8px;}#dr-btn{position:fixed;top:20px;right:20px;background:#334155;color:#fff;border:none;padding:10px 20px;cursor:pointer;border-radius:6px;z-index:2147483648;font-size:15px;font-weight:bold;box-shadow:0 4px 6px rgba(0,0,0,0.1);font-family:-apple-system, sans-serif;transition:background 0.2s;}#dr-btn:hover{background:#0f172a;}</style>';var btn='<button id=\'dr-btn\' onclick=\'document.getElementById(&quot;dr-over&quot;).remove()\'>Close Reader</button>';var cnt='<div id=\'dr-over-inner\'><h1>'+(a?a.title:'Extraction Failed')+'</h1>'+(a?a.content:'<p>Could not extract article content.</p>')+'</div>';o.innerHTML=css+btn+cnt;document.body.appendChild(o);}).catch(e=>{console.error('Reader Error:',e);});};document.head.appendChild(s);})();" 
+                class="inline-block bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-lg px-6 py-2 rounded-full shadow-lg shadow-emerald-900/50 hover:shadow-emerald-900/80 hover:-translate-y-1 transition-all transform grab-cursor select-none mb-4 border border-emerald-400"
+                title="Drag me to your bookmarks bar!"
+                onclick="event.preventDefault(); const m = document.getElementById('msg'); m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 3000);"
+            >
+                Dense Reader
+            </a>
+
+            <div id="msg" class="hidden text-emerald-400 font-bold mb-3 -mt-2 transition-all text-sm">
+                Don't click me here! Drag me to your bookmarks bar.
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4 text-left border-t border-slate-700 pt-4 mt-2">
+                
+                <!-- Instruction 2 -->
+                <div class="bg-slate-700/50 p-3 rounded-lg border border-slate-600 relative mt-2 sm:mt-0 flex items-center h-12">
+                    <div class="absolute -top-3 -left-3 bg-emerald-500 text-slate-900 w-6 h-6 text-sm rounded-full flex items-center justify-center font-bold shadow-sm">2</div>
+                    <h3 class="font-bold text-white text-sm m-0">Visit the Target Site</h3>
+                </div>
+
+                <!-- Instruction 3 -->
+                <div class="bg-slate-700/50 p-3 rounded-lg border border-slate-600 relative mt-3 sm:mt-0 flex items-center h-12">
+                    <div class="absolute -top-3 -left-3 bg-emerald-500 text-slate-900 w-6 h-6 text-sm rounded-full flex items-center justify-center font-bold shadow-sm">3</div>
+                    <h3 class="font-bold text-white text-sm m-0">Click the Bookmark</h3>
+                </div>
+
+            </div>
+            
+            <p class="text-xs text-slate-500 mt-4 text-center">
+                * If you don't see your bookmarks bar, press <strong>Ctrl+Shift+B</strong> (Windows/Linux) or <strong>Cmd+Shift+B</strong> (Mac) to show it.
+            </p>
+
+        </div>
+    </div>
+
+</body>
+</html>
